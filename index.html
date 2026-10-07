@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ใบปะหน้าพัสดุ 4x6</title>
+<style>
+@font-face{font-family:'Sarabun';font-weight:400;src:url(fonts/sarabun-thai-400-normal.woff2) format('woff2');unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:'Sarabun';font-weight:700;src:url(fonts/sarabun-thai-700-normal.woff2) format('woff2');unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:'Sarabun';font-weight:400;src:url(fonts/sarabun-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122}
+@font-face{font-family:'Sarabun';font-weight:700;src:url(fonts/sarabun-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122}
+
+:root{
+  --bg:#f4f5f7; --card:#fff; --ink:#1f2328; --muted:#6b7280; --line:#e3e6ea;
+  --brand:#ee4d2d; --brand-ink:#fff; --brand-soft:#fff1ed; --link:#2563eb;
+  --ok:#16a34a; --ok-soft:#e9f8ee; --warn:#b45309; --warn-soft:#fff6e5; --err:#dc2626;
+  --r:8px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:'Sarabun','Leelawadee UI',Tahoma,sans-serif;font-size:15px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--link)}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:10px 24px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.logo .mark{width:32px;height:32px;border-radius:8px;background:var(--brand);display:grid;place-items:center}
+.tabs{display:flex;gap:4px;margin-left:12px}
+.tab{border:0;background:transparent;padding:8px 14px;border-radius:6px;cursor:pointer;color:var(--muted);font-weight:700}
+.tab.active{background:var(--brand-soft);color:var(--brand)}
+.spacer{flex:1}
+.xl-pill{display:flex;align-items:center;gap:8px;font-size:13px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fafafa;cursor:pointer}
+.xl-pill .dot{width:8px;height:8px;border-radius:50%;background:#9ca3af}
+.xl-pill.ok .dot{background:var(--ok)} .xl-pill.warn .dot{background:#f59e0b} .xl-pill.err .dot{background:var(--err)}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1240px;margin:0 auto;padding:20px 24px 60px}
+#tab-history.wrap{max-width:1480px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:20px;align-items:start}
+@media (max-width:1000px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border-radius:var(--r);padding:20px 22px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.card h2{margin:0 0 12px;font-size:20px;font-weight:700}
+.muted{color:var(--muted)} .small{font-size:13px}
+.linkbtn{border:0;background:none;color:var(--link);cursor:pointer;padding:0;font-size:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px 32px}
+.row3{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:640px){.row,.row3{grid-template-columns:1fr}}
+.field label{display:block;font-size:14px;color:#444;margin-bottom:6px}
+.req::before{content:'* ';color:var(--brand)}
+.input,select.input,textarea.input{width:100%;border:1px solid #d9dce1;border-radius:4px;padding:8px 12px;background:#fff;outline:none;transition:border-color .15s}
+.input:focus{border-color:var(--brand)}
+.input.invalid{border-color:var(--err);background:#fff8f8}
+textarea.input{resize:vertical;min-height:84px}
+.phone-wrap{display:flex;border:1px solid #d9dce1;border-radius:4px;background:#fff}
+.phone-wrap:focus-within{border-color:var(--brand)}
+.phone-wrap span{padding:8px 10px;color:var(--muted);border-right:1px solid var(--line)}
+.phone-wrap input{border:0;outline:0;padding:8px 12px;flex:1;min-width:0;background:transparent}
+.btn{border:1px solid #d9dce1;background:#fff;border-radius:4px;padding:8px 16px;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:#f7f7f8}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.primary:hover{filter:brightness(.95)}
+.btn.outline{border-color:var(--brand);color:var(--brand)}
+.btn.sm{padding:4px 10px;font-size:13px;font-weight:400}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.hint{font-size:12px;color:#8a8f98;margin-top:4px}
+.sep{height:10px;background:var(--bg);margin:0 -22px 16px}
+
+.sender-box{border:1px solid var(--line);border-radius:6px;padding:12px 14px;background:#fcfcfd}
+.sender-name{display:flex;gap:10px;align-items:center;margin-bottom:6px}
+.sender-name select{max-width:320px}
+
+.parse-result{margin-top:10px;padding:8px 12px;border-radius:6px;font-size:13px;display:none}
+.parse-result.ok{display:block;background:var(--ok-soft);color:#166534}
+.parse-result.warn{display:block;background:var(--warn-soft);color:var(--warn)}
+
+.loc{position:relative}
+.loc-list{position:absolute;left:0;right:0;top:100%;z-index:30;background:#fff;border:1px solid #d9dce1;border-top:0;max-height:280px;overflow:auto;display:none;box-shadow:0 8px 20px rgba(0,0,0,.08)}
+.loc-list.open{display:block}
+.loc-item{padding:7px 12px;cursor:pointer;font-size:14px}
+.loc-item:hover,.loc-item.hi{background:var(--brand-soft)}
+.loc-item b{font-weight:700}
+.returning{display:none;margin-top:8px;padding:8px 12px;border-radius:6px;background:#eef4ff;font-size:13px;color:#1e40af}
+.returning.show{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+.actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}
+.edit-banner{display:none;background:var(--warn-soft);color:var(--warn);padding:8px 12px;border-radius:6px;margin-bottom:12px;font-size:14px}
+.edit-banner.show{display:flex;justify-content:space-between;align-items:center}
+
+/* ---------- preview ---------- */
+.preview-card{position:sticky;top:72px}
+.preview-stage{background:#e9ebee;border-radius:6px;padding:18px;display:flex;justify-content:center}
+.preview-stage .label{box-shadow:0 2px 10px rgba(0,0,0,.18)}
+
+/* ---------- LABEL 4x6 ---------- */
+.label{width:4in;height:6in;background:#fff;color:#000;padding:0.12in;display:flex;flex-direction:column;font-family:'Sarabun','Leelawadee UI',Tahoma,sans-serif;overflow:hidden;position:relative}
+.lb-top{display:flex;justify-content:space-between;align-items:center;border:2px solid #000;border-bottom:0;padding:3px 8px;font-size:11px;font-weight:700}
+.lb-top .ord{font-size:13px;letter-spacing:.5px}
+.lb-from{border:2px solid #000;border-bottom:0;padding:5px 8px;font-size:12px;line-height:1.35}
+.lb-tag{display:inline-block;background:#000;color:#fff;font-weight:700;font-size:10px;padding:0 6px;border-radius:2px;margin-right:6px;vertical-align:1px}
+.lb-from .nm{font-weight:700;font-size:13px}
+.lb-to{border:3px solid #000;padding:8px 10px;flex:1;display:flex;flex-direction:column;min-height:0}
+.lb-to .nm{font-size:28px;font-weight:700;line-height:1.15;margin-top:4px;word-break:break-word}
+.lb-to .tel{font-size:21px;font-weight:700;margin-top:2px}
+.lb-to .addr{font-size:19px;line-height:1.35;margin-top:10px;word-break:break-word}
+.lb-to .admin{font-size:19px;font-weight:700;line-height:1.35;margin-top:4px}
+.lb-to .zipwrap{margin-top:auto;display:flex;align-items:flex-end;justify-content:space-between;gap:8px;padding-top:6px}
+.zip{display:flex;gap:3px}
+.zip span{width:0.46in;height:0.56in;border:2px solid #000;display:grid;place-items:center;font-size:32px;font-weight:700}
+.lb-prov{font-size:17px;font-weight:700;text-align:right;line-height:1.15;max-width:1.6in}
+.lb-foot{border:2px solid #000;border-top:0;padding:4px 8px;font-size:13px;line-height:1.35;max-height:0.75in;overflow:hidden}
+.lb-foot b{font-weight:700}
+.placeholder{color:#b5b5b5}
+
+/* ---------- history ---------- */
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.toolbar .input{width:auto}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:#fff;border-radius:var(--r);padding:12px 16px}
+.stat .k{font-size:13px;color:var(--muted)} .stat .v{font-size:22px;font-weight:700}
+.tbl-wrap{overflow:auto;background:#fff;border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:1150px}
+td.addrcell{min-width:240px}
+td input.cell.prod{min-width:150px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:#fafafa;font-weight:700;color:#444;position:sticky;top:0;white-space:nowrap}
+td.num,th.num{text-align:right}
+td input.cell{width:100%;border:1px solid transparent;border-radius:4px;padding:4px 6px;background:#f8f9fa}
+td input.cell:hover{border-color:#d9dce1}
+td input.cell:focus{border-color:var(--brand);background:#fff;outline:0}
+td input.cell.num{text-align:right;width:90px}
+td input.cell.trk{width:140px}
+.badge{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:#f1f2f4;color:#555;white-space:nowrap}
+.badge.done{background:var(--ok-soft);color:#166534}
+.badge.pend{background:var(--warn-soft);color:var(--warn)}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+.rowact{display:flex;gap:4px;white-space:nowrap}
+
+/* ---------- modal & toast ---------- */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:10px;max-width:560px;width:100%;padding:22px;max-height:90vh;overflow:auto}
+.modal h3{margin:0 0 12px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1f2328;color:#fff;padding:10px 18px;border-radius:8px;opacity:0;transition:.25s;z-index:60;font-size:14px;pointer-events:none;max-width:90vw}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.toast.err{background:var(--err)}
+
+.hidden{display:none!important}
+
+/* ---------- PRINT ---------- */
+#printArea{display:none}
+@page{size:4in 6in;margin:0}
+@media print{
+  html,body{background:#fff;width:4in}
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block}
+  #printArea .label{page-break-after:always;break-after:page;box-shadow:none}
+  #printArea .label:last-child{page-break-after:auto;break-after:auto}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">
+    <div class="mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
+    ใบปะหน้าพัสดุ
+  </div>
+  <nav class="tabs">
+    <button class="tab active" data-tab="create">สร้างใบปะหน้า</button>
+    <button class="tab" data-tab="history">รายการออเดอร์</button>
+  </nav>
+  <div class="spacer"></div>
+  <div class="xl-pill" id="xlPill" title="ตั้งค่าไฟล์ Excel"><span class="dot"></span><span id="xlText">ยังไม่เชื่อมไฟล์ Excel</span></div>
+  <button class="btn sm" id="btnSettings">⚙ ตั้งค่า</button>
+</header>
+
+<!-- ================= CREATE ================= -->
+<main class="wrap" id="tab-create">
+  <div class="grid">
+    <div>
+      <div class="edit-banner" id="editBanner"><span>กำลังแก้ไขออเดอร์ <b id="editOrderNo"></b></span><button class="btn sm" id="btnCancelEdit">ยกเลิกการแก้ไข</button></div>
+
+      <section class="card">
+        <h2>ที่อยู่ผู้ส่ง</h2>
+        <div class="sender-box">
+          <div class="sender-name">
+            <select class="input" id="senderSelect"></select>
+            <button class="linkbtn" id="btnEditSenders">✎ แก้ไขชื่อผู้ส่ง</button>
+          </div>
+          <div id="senderAddr" class="small"></div>
+          <div class="small">เบอร์โทรศัพท์: <span id="senderPhone"></span></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>ที่อยู่ผู้รับ</h2>
+        <div class="field">
+          <label>ป้อนอัตโนมัติ</label>
+          <textarea class="input" id="autoText" placeholder="วางข้อมูลผู้รับทั้งหมดในบรรทัดเดียว เช่น ชื่อ เบอร์โทร ที่อยู่ ระบบจะแยก ชื่อ / เบอร์โทร / ที่อยู่ / ตำบล / อำเภอ / จังหวัด / รหัสไปรษณีย์ ให้อัตโนมัติ"></textarea>
+          <div class="hint">ตัวอย่าง: สมชาย ใจดี 081-234-5678 99/12 หมู่ 5 ถ.สุขุมวิท ต.บางพลีใหญ่ อ.บางพลี จ.สมุทรปราการ 10540</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn outline sm" id="btnAutofill">แยกข้อมูล &amp; กรอกอัตโนมัติ</button>
+          <button class="btn sm" id="btnPasteAutofill">วางจากคลิปบอร์ด &amp; กรอก</button>
+        </div>
+        <div class="parse-result" id="parseResult"></div>
+
+        <div style="height:18px"></div>
+        <div class="row">
+          <div class="field">
+            <label class="req">เบอร์โทรศัพท์</label>
+            <div class="phone-wrap"><span>+66</span><input id="fPhone" inputmode="tel" placeholder="กรุณากรอก"></div>
+            <div class="returning" id="returning"></div>
+          </div>
+          <div class="field">
+            <label class="req">ชื่อ</label>
+            <input class="input" id="fName" placeholder="กรุณากรอก">
+          </div>
+          <div class="field">
+            <label class="req">รายละเอียดที่อยู่</label>
+            <input class="input" id="fAddress" placeholder="บ้านเลขที่ หมู่ ซอย ถนน หมู่บ้าน">
+          </div>
+          <div class="field loc">
+            <label class="req">จังหวัด / เขต,อำเภอ / แขวง,ตำบล / รหัสไปรษณีย์</label>
+            <input class="input" id="locSearch" placeholder="พิมพ์ค้นหา เช่น ดอกไม้ หรือ 10250" autocomplete="off">
+            <div class="loc-list" id="locList"></div>
+          </div>
+        </div>
+        <div class="row3" style="margin-top:10px">
+          <div class="field"><label class="small muted">แขวง/ตำบล</label><input class="input" id="fDistrict"></div>
+          <div class="field"><label class="small muted">เขต/อำเภอ</label><input class="input" id="fAmphoe"></div>
+          <div class="field"><label class="small muted">จังหวัด</label><input class="input" id="fProvince"></div>
+          <div class="field"><label class="small muted">รหัสไปรษณีย์</label><input class="input" id="fZip" inputmode="numeric" maxlength="5"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>ข้อมูลสินค้า &amp; การจัดส่ง</h2>
+        <div class="row">
+          <div class="field"><label>ชื่อสินค้า</label><input class="input" id="fProduct" placeholder="เช่น เสื้อยืดสีขาว x2" list="productList"><datalist id="productList"></datalist></div>
+          <div class="field"><label>ยอดขาย (บาท)</label><input class="input" id="fPrice" type="number" min="0" step="0.01" placeholder="0.00"></div>
+          <div class="field"><label>เลขพัสดุ <span class="muted small">(กรอกภายหลังได้)</span></label><input class="input" id="fTracking" placeholder="เช่น TH0123456789"></div>
+          <div class="field"><label>ค่าส่ง (บาท) <span class="muted small">(กรอกภายหลังได้)</span></label><input class="input" id="fShip" type="number" min="0" step="0.01" placeholder="0.00"></div>
+          <div class="field" style="grid-column:1/-1"><label>หมายเหตุ</label><input class="input" id="fNote" placeholder="เช่น ระวังแตก / โทรก่อนส่ง"></div>
+        </div>
+        <label class="small" style="display:flex;gap:6px;align-items:center;margin-top:12px"><input type="checkbox" id="chkShowProduct"> แสดงชื่อสินค้าบนใบปะหน้า</label>
+      </section>
+
+      <div class="actions">
+        <button class="btn" id="btnClear">ล้างฟอร์ม</button>
+        <button class="btn" id="btnSaveOnly">บันทึก (ไม่ปริ้น)</button>
+        <button class="btn primary" id="btnSavePrint">🖨 บันทึก &amp; ปริ้นใบปะหน้า</button>
+      </div>
+    </div>
+
+    <aside class="card preview-card">
+      <h2 style="display:flex;justify-content:space-between;align-items:center">ตัวอย่างใบปะหน้า <span class="small muted" style="font-weight:400">4 × 6 นิ้ว</span></h2>
+      <div class="preview-stage"><div id="preview"></div></div>
+      <p class="small muted" style="margin:10px 0 0">ตอนสั่งปริ้น ให้เลือกขนาดกระดาษ <b>4x6 in (100×150 mm)</b> และตั้งระยะขอบเป็น <b>ไม่มี (None)</b></p>
+    </aside>
+  </div>
+</main>
+
+<!-- ================= HISTORY ================= -->
+<main class="wrap hidden" id="tab-history">
+  <div class="stats" id="stats"></div>
+  <div class="toolbar">
+    <input class="input" id="hSearch" placeholder="ค้นหา ชื่อ / เบอร์ / เลขพัสดุ / สินค้า" style="min-width:260px">
+    <select class="input" id="hMonth"></select>
+    <select class="input" id="hStatus">
+      <option value="">ทุกสถานะ</option>
+      <option value="pend">ยังไม่มีเลขพัสดุ/ค่าส่ง</option>
+      <option value="done">ครบแล้ว</option>
+    </select>
+    <div class="spacer"></div>
+    <button class="btn sm" id="btnPrintSel" disabled>🖨 ปริ้นที่เลือก (<span id="selCount">0</span>)</button>
+    <button class="btn sm" id="btnExport">⬇ ดาวน์โหลด Excel</button>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th><input type="checkbox" id="chkAll"></th>
+        <th>วันที่</th><th>ออเดอร์</th><th>ผู้รับ</th><th>เบอร์โทร</th><th>จังหวัด</th><th>สินค้า</th>
+        <th class="num">ยอดขาย</th><th>เลขพัสดุ</th><th class="num">ค่าส่ง</th><th>สถานะ</th><th></th>
+      </tr></thead>
+      <tbody id="hBody"></tbody>
+    </table>
+  </div>
+  <p class="small muted">แก้ไข ยอดขาย / เลขพัสดุ / ค่าส่ง ในตารางได้เลย ระบบบันทึกลง Excel ให้อัตโนมัติ</p>
+</main>
+
+<!-- ================= SETTINGS MODAL ================= -->
+<div class="modal-bg" id="settingsModal">
+  <div class="modal">
+    <h3>ตั้งค่า</h3>
+    <div class="field"><label>ชื่อผู้ส่ง (เลือกได้สูงสุด 3 ชื่อ — ที่อยู่ใช้ร่วมกัน)</label>
+      <input class="input" id="sName1" placeholder="ชื่อผู้ส่ง 1 (เช่น ชื่อร้าน)" style="margin-bottom:6px">
+      <input class="input" id="sName2" placeholder="ชื่อผู้ส่ง 2 (เช่น ชื่อบริษัทใหม่)" style="margin-bottom:6px">
+      <input class="input" id="sName3" placeholder="ชื่อผู้ส่ง 3">
+    </div>
+    <div class="field" style="margin-top:12px"><label>ที่อยู่ผู้ส่ง</label><textarea class="input" id="sAddr" style="min-height:64px" placeholder="บ้านเลขที่ ซอย ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์"></textarea></div>
+    <div class="field" style="margin-top:12px"><label>เบอร์โทรผู้ส่ง</label><input class="input" id="sPhone" placeholder="08x-xxx-xxxx"></div>
+    <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+    <div class="field"><label>ไฟล์ Excel สำหรับเก็บข้อมูล</label>
+      <div class="small muted" id="xlInfo" style="margin-bottom:8px"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn sm" id="btnXlNew">＋ สร้างไฟล์ Excel ใหม่</button>
+        <button class="btn sm" id="btnXlOpen">📂 เลือกไฟล์ Excel เดิม</button>
+        <button class="btn sm" id="btnXlSync">↻ บันทึกลงไฟล์ตอนนี้</button>
+      </div>
+      <div class="hint">แนะนำให้เก็บไฟล์ไว้ในโฟลเดอร์ <b>data</b> ข้างๆ หน้าเว็บนี้ • ถ้าเปิดไฟล์ Excel ค้างไว้ ระบบจะเขียนไม่ได้ ให้ปิดไฟล์ก่อน</div>
+    </div>
+    <div class="actions" style="margin-top:18px">
+      <button class="btn" id="btnSettingsCancel">ปิด</button>
+      <button class="btn primary" id="btnSettingsSave">บันทึกการตั้งค่า</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div id="printArea"></div>
+
+<script src="lib/xlsx.full.min.js"></script>
+<script src="lib/thai-address-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

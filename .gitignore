@@ -1,0 +1,6 @@
+# ข้อมูลลูกค้า — ห้ามอัปโหลดขึ้น GitHub
+data/*.xlsx
+*.xlsx
+~$*
+.DS_Store
+Thumbs.db
